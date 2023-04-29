@@ -1,9 +1,12 @@
 package com.tata.flux.wpms;
 
+import com.tata.flux.SitiosWeb;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
+@Slf4j
 public class WordPressController {
     private final WordPressService wordPressService;
 
@@ -13,7 +16,8 @@ public class WordPressController {
 
     @GetMapping("/posts")
     public Flux<Post> getPosts(@RequestParam String uri) {
-        return wordPressService.getPosts(uri).take(3);
+        log.info("uri {}",SitiosWeb.getLetter(uri));
+        return wordPressService.getPosts(SitiosWeb.getLetter(uri)).take(3);
     }
 
     @PostMapping ("/posts")

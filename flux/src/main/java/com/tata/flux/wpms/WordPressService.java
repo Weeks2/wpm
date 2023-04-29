@@ -25,7 +25,7 @@ public class WordPressService {
         return request(this.baseUrl);
     }
 
-    private Flux<Post> request (String baseUrl)
+    private Flux<Post> request2(String baseUrl)
     {
         log.info(baseUrl);
         return baseUrl.isBlank() ? Flux.just() :
@@ -33,7 +33,29 @@ public class WordPressService {
                 .uri("/wp-json/wp/v2/posts")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToFlux(Post.class);
+                .bodyToFlux(Post.class)
+                        .doOnError(red-> {
+                    log.info("error {}",red);
+                        });
+    }
+
+    private Flux<Post> request(String baseUrl) {
+        log.info(baseUrl);
+        return webClient.mutate().baseUrl(baseUrl).build().get()
+                .uri("/wp-json/wp/v2/posts")
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToFlux(Post.class)
+                .doOnNext(d-> {
+                    log.info("datos {}",d.getTitle());
+                })
+                .onErrorResume(throwable -> {
+                    if (baseUrl.isBlank()) {
+                        log.error("La URL de la base está en blanco");
+                    }
+                    log.error("Se ha producido un error al obtener los datos: {}", baseUrl);
+                    return Flux.empty();
+                });
     }
 
 }

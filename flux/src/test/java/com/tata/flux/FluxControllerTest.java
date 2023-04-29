@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -25,6 +26,7 @@ import static reactor.core.publisher.Mono.when;
 @ExtendWith(MockitoExtension.class)
 public class FluxControllerTest {
 
+    @Autowired
     WebTestClient webTestClient;
 
     FluxController fluxController;

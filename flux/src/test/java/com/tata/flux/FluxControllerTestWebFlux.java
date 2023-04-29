@@ -1,23 +1,32 @@
 package com.tata.flux;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @WebFluxTest(controllers = FluxController.class)
 @Import(FluxService.class)
+//@SpringBootTest (classes = {FluxController.class,FluxService.class})
 public class FluxControllerTestWebFlux {
 
     @Autowired
@@ -55,5 +64,22 @@ public class FluxControllerTestWebFlux {
         StepVerifier.create(response)
                 .expectNext("getDataJsonGet")
                 .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "a"})
+    @RepeatedTest(1)
+    void palindromes(String candidate) {
+        assertEquals("a",candidate);
+    }
+
+    @ParameterizedTest
+   // @ValueSource(classes = getItems())
+    void testWithValueSource(String myObject) {
+        // tu código de prueba aquí
+    }
+
+    private Flux<FluxDataRecord> getItems() {
+        return Flux.just();//Flux.fromIterable(Arrays.asList());
     }
 }

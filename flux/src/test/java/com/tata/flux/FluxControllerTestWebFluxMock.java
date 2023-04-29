@@ -3,6 +3,7 @@ package com.tata.flux;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,10 +18,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
-@ExtendWith(SpringExtension.class)
-@WebFluxTest(controllers = FluxController.class)
-@Import(FluxService.class)
+@ExtendWith(MockitoExtension.class)
+//@WebFluxTest(controllers = FluxController.class)
+//@Import(FluxService.class)
 public class FluxControllerTestWebFluxMock {
 
     @Autowired
@@ -31,11 +33,12 @@ public class FluxControllerTestWebFluxMock {
 
     @Test
     public void testGetDataEndpoint() {
+        FluxService fluxService = new FluxService();
         DataSetRequest request = new DataSetRequest(1, "item1");
         FluxDataRecord record1 = new FluxDataRecord(1, "item0");
         FluxDataRecord record2 = new FluxDataRecord(2, "item1");
         List<FluxDataRecord> records = Arrays.asList(record1, record2);
-        Mockito.when(fluxService.getAllRecords(request)).thenReturn(Flux.fromIterable(records));
+        Mockito.when(fluxService.getAllRecords(any(DataSetRequest.class))).thenReturn(Flux.fromIterable(records));
 
         webTestClient.post().uri("https://localhost:8080/flux/records")
                 .contentType(MediaType.APPLICATION_JSON)
