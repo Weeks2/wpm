@@ -1,6 +1,9 @@
-package com.tata.flux.wpms;
+package com.tata.flux.controller;
 
 import com.tata.flux.model.SitiosWeb;
+import com.tata.flux.wpms.Post;
+import com.tata.flux.wpms.PostRequest;
+import com.tata.flux.wpms.WordPressService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
