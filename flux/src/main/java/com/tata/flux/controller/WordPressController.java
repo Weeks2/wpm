@@ -25,7 +25,7 @@ public class WordPressController {
 
     @PostMapping ("/posts")
     public Flux<Post> getPosts(@RequestBody PostRequest postrequest) {
-        return wordPressService.getPosts(postrequest.getBaseUrl()).take(postrequest.getCount());
+        return wordPressService.getPosts(postrequest);
     }
 }
 

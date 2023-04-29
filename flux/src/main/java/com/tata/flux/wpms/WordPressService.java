@@ -21,6 +21,9 @@ public class WordPressService {
         this.baseUrl = baseUrl;
         return request(this.baseUrl);
     }
+    public Flux<Post> getPosts(PostRequest postRequest) {
+        return request(postRequest.getBaseUrl()).take(postRequest.getCount());
+    }
     public Flux<Post> getPosts() {
         return request(this.baseUrl);
     }
