@@ -1,4 +1,4 @@
-package com.tata.flux;
+package com.tata.flux.model;
 
 import java.util.Arrays;
 

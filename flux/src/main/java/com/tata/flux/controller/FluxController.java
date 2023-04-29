@@ -1,16 +1,15 @@
-package com.tata.flux;
+package com.tata.flux.controller;
 
+import com.tata.flux.model.DataSetRequest;
+import com.tata.flux.model.FluxDataRecord;
+import com.tata.flux.service.FluxService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.nio.charset.StandardCharsets;
-import java.util.zip.GZIPOutputStream;
 
 @Slf4j
 @Data

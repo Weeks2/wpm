@@ -1,6 +1,6 @@
 package com.tata.flux.wpms;
 
-import com.tata.flux.SitiosWeb;
+import com.tata.flux.model.SitiosWeb;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

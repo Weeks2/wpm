@@ -1,4 +1,4 @@
-package com.tata.flux;
+package com.tata.flux.configuration;
 
 import org.springframework.context.annotation.Configuration;
 

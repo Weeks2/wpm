@@ -1,4 +1,4 @@
-package com.tata.flux;
+package com.tata.flux.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
