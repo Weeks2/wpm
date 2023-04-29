@@ -18,7 +18,7 @@ public class PostProcessor {
 
     @PostConstruct
     public void processNewPosts() {
-        wordPressService.getPosts()
+        wordPressService.getPosts("")
                 .filter(post -> post.getDate().isAfter(LocalDateTime.now().minusMinutes(5)))
                 .subscribe(this::processPost);
     }

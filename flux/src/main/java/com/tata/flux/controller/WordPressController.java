@@ -19,13 +19,12 @@ public class WordPressController {
 
     @GetMapping("/posts")
     public Flux<Post> getPosts(@RequestParam String uri) {
-        log.info("uri {}",SitiosWeb.getLetter(uri));
-        return wordPressService.getPosts(SitiosWeb.getLetter(uri)).take(3);
+        return wordPressService.getPosts(uri);
     }
 
     @PostMapping ("/posts")
     public Flux<Post> getPosts(@RequestBody PostRequest postrequest) {
-        return wordPressService.getPosts(postrequest);
+        return wordPressService.getPostsBy(postrequest);
     }
 }
 
