@@ -3,6 +3,8 @@
 Este projecto se utilizo para demostrar el funcionamiento de webflux utilizando la api de wordpress de sitios publicos de noticias 
 siente libre de desargarlo incluso colaborar.
 
+rest-api, wordpress-api, webflux, dataset. webclient.
+
 <pre>
 https://cambiodemichoacan.com.mx/
 https://despertardelacosta.net/
