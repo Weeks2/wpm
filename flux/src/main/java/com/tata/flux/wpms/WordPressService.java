@@ -1,30 +1,33 @@
 package com.tata.flux.wpms;
 
+import com.tata.flux.model.SitiosWeb;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 public class WordPressService {
     private final WebClient webClient;
-    @Value("${wordpress.api_with_params}")
-    private String WP_API_WITH_PARAMS;
 
+    @Value("${wordpress.api_page}")
+    private  String WP_API_;
     public WordPressService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
     public Flux<Post> getPostsBy(PostRequest postRequest) {
         return getPosts(postRequest.getBaseUrl()).take(postRequest.getCount());
     }
-    public Flux<Post> getPosts(String baseUrl) {
-        log.info(baseUrl + WP_API_WITH_PARAMS);
-        return webClient.mutate().baseUrl(baseUrl).build()
+    public Flux<Post> getPosts(String site) {
+        return webClient.mutate().baseUrl(createUri(site)).build()
                 .get()
-                .uri(baseUrl + WP_API_WITH_PARAMS)
+                .uri(createUri(site))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(Post.class)
@@ -32,11 +35,60 @@ public class WordPressService {
                     log.info("datos {}",d.getTitle());
                 })
                 .onErrorResume(throwable -> {
-                    if (baseUrl.isBlank()) {
+                    if (site.isBlank()) {
                         log.error("La URL de la base está en blanco");
                     }
-                    log.error("Se ha producido un error al obtener los datos: {}", baseUrl);
+                    log.error("Se ha producido un error al obtener los datos: {}", createUri(site));
                     return Flux.empty();
                 });
+    }
+
+    @PostConstruct
+    void init() {
+        loadData( "1",1);
+
+    }
+    public Mono<Integer> header(String site) {
+        return webClient.get().uri(createUri(site))//  X-WP-TotalPages
+                .exchangeToMono(response -> response.toBodilessEntity())
+                .map(entity -> entity.getHeaders().getFirst("x-wp-total"))
+                .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
+    }
+
+    public Flux<Post> loadData(String site) {
+
+        webClient.get().uri(createUri(site)).retrieve().toEntity(Void.class).flatMap(responseEntity -> {
+                    int totalPages = Integer.parseInt(responseEntity.getHeaders().getFirst("x-wp-total"));
+                      Flux.range(1, totalPages)
+                            .concatMap(page -> {
+                                return webClient.get()
+                                       .uri(createUri(site))
+                                       .retrieve()
+                                        .bodyToFlux(Post.class)
+                                        .doOnNext(d-> {
+                                            log.info("{}",d.getTitle());
+                                        });
+                            });
+                     return Mono.empty();
+                });
+        return Flux.empty();
+    }
+    public Flux<Post> loadData(String site, int totalPages) {
+        Flux.range(1, totalPages).concatMap(i -> {
+            return WebClient.create()
+                    .get()
+                    .uri(createUri(site))
+                    .retrieve()
+                    .bodyToFlux(Post.class)
+                    .doOnNext(d-> {
+                        log.info("{}",d.getTitle());
+                    });
+        }).doOnComplete(() -> {
+        });
+       return Flux.just();
+    }
+
+    private String createUri(String uriId) {
+        return SitiosWeb.getLetter(uriId) + WP_API_;
     }
 }

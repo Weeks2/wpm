@@ -9,4 +9,7 @@ public class PostRequest {
     private String baseUrl;
     @JsonProperty
     private Integer count;
+
+    private int perPage;
+    private int page;
 }

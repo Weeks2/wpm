@@ -1,5 +1,7 @@
 package com.tata.flux.model;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Arrays;
 
 public enum SitiosWeb {
@@ -15,7 +17,6 @@ public enum SitiosWeb {
     RAFA_GANO_NOTICIERA("10","http://www.rafaganoticiera.com/"),
     ZIHUABOLETIN_NOTICIAS("11","https://zihuaboletinnoticias.com/"),
     YAVAS("12","https://yavas.mx/");
-
     private String number;
     private String letter;
 
@@ -23,7 +24,6 @@ public enum SitiosWeb {
     private SitiosWeb(String number,String letter) {
         this.number = number;
         this.letter = letter;
-
     }
 
     public String getLetter() {
@@ -39,6 +39,6 @@ public enum SitiosWeb {
                 .filter(e -> e.getNumber().equals(number))
                 .map(SitiosWeb::getLetter)
                 .findFirst()
-                .orElse("https://cambiodemichoacan.com.mx/");
+                .orElse("https://cambiodemichoacan.com.mx/${wordpress.api_page}");
     }
 }
