@@ -43,38 +43,8 @@ public class WordPressService {
                 });
     }
 
-    @PostConstruct
-    void init() {
-        log.info("....");
-        header("1").map(totalPages->{
-            log.info("page {}",totalPages);
-            load("1");
-            return Mono.empty();
-        }).subscribe();
-
-    }
-    public Mono<Integer> header(String siteId) {
-        return webClient.get().uri(createUri(siteId))
-                .exchangeToMono(response -> response.toBodilessEntity())
-                .map(entity -> entity.getHeaders().getFirst("x-wp-total"))
-                .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
-    }
-
-    private void load(String siteId) {
-        webClient.get().uri(createUri(siteId)).retrieve().bodyToFlux(Post.class)
-                .doOnNext(d-> {
-                    log.info("{}",d.getTitle());
-                }).subscribe();
-    }
-    public Flux<Post> loadData(String siteId) {
-        header(siteId).map(totalPages->{
-           log.info("page {}",totalPages);
-            return Mono.empty();
-          });
-        return Flux.empty();
-    }
     public Flux<Post> loadData(String site, int totalPages) {
-        Flux.range(1, totalPages).concatMap(i -> {
+        return Flux.range(1, totalPages).concatMap(i -> {
             return webClient.get()
                     .uri(createUri(site))
                     .retrieve()
@@ -84,10 +54,44 @@ public class WordPressService {
                     });
         }).doOnComplete(() -> {
         });
-       return Flux.just();
     }
 
     private String createUri(String uriId) {
         return SitiosWeb.getLetter(uriId) + WP_API_;
+    }
+
+    @PostConstruct
+    void init() {
+        header("1").map(totalPages->{
+
+            Flux.range(1,totalPages).concatMap(page-> {
+                return load("1");
+            }).subscribe();
+
+            log.info("page {}",totalPages);
+
+            return Mono.empty();
+        }).subscribe();
+
+    }
+
+    /**
+     * X-WP-Total: 17454
+     * X-WP-TotalPages: 175
+     */
+    public Mono<Integer> header(String siteId) {
+        String uri = createUri(siteId);
+        log.info(uri);
+        return webClient.get().uri(uri).exchangeToMono(response -> response.toBodilessEntity())
+                .map(entity -> entity.getHeaders().getFirst("x-wp-totalpages"))
+                .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
+    }
+
+    private Flux<Post> load(String siteId) {
+        return webClient.get().uri(createUri(siteId))
+                .retrieve().bodyToFlux(Post.class)
+                .doOnNext(d-> {
+                    log.info("{}",d.getTitle());
+                });
     }
 }
