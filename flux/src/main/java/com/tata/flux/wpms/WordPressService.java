@@ -45,32 +45,32 @@ public class WordPressService {
 
     @PostConstruct
     void init() {
-        loadData( "1",1);
+        log.info("....");
+        header("1").map(totalPages->{
+            log.info("page {}",totalPages);
+            load("1");
+            return Mono.empty();
+        }).subscribe();
 
     }
-    public Mono<Integer> header(String site) {
-        return webClient.get().uri(createUri(site))//  X-WP-TotalPages
+    public Mono<Integer> header(String siteId) {
+        return webClient.get().uri(createUri(siteId))
                 .exchangeToMono(response -> response.toBodilessEntity())
                 .map(entity -> entity.getHeaders().getFirst("x-wp-total"))
                 .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
     }
 
-    public Flux<Post> loadData(String site) {
-
-        webClient.get().uri(createUri(site)).retrieve().toEntity(Void.class).flatMap(responseEntity -> {
-                    int totalPages = Integer.parseInt(responseEntity.getHeaders().getFirst("x-wp-total"));
-                      Flux.range(1, totalPages)
-                            .concatMap(page -> {
-                                return webClient.get()
-                                       .uri(createUri(site))
-                                       .retrieve()
-                                        .bodyToFlux(Post.class)
-                                        .doOnNext(d-> {
-                                            log.info("{}",d.getTitle());
-                                        });
-                            });
-                     return Mono.empty();
-                });
+    private void load(String siteId) {
+        webClient.get().uri(createUri(siteId)).retrieve().bodyToFlux(Post.class)
+                .doOnNext(d-> {
+                    log.info("{}",d.getTitle());
+                }).subscribe();
+    }
+    public Flux<Post> loadData(String siteId) {
+        header(siteId).map(totalPages->{
+           log.info("page {}",totalPages);
+            return Mono.empty();
+          });
         return Flux.empty();
     }
     public Flux<Post> loadData(String site, int totalPages) {
