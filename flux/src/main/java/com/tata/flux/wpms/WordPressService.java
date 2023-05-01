@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+
 @Slf4j
 @Service
 public class WordPressService {
@@ -60,19 +62,23 @@ public class WordPressService {
         return SitiosWeb.getLetter(uriId) + WP_API_;
     }
 
-    @PostConstruct
+
     void init() {
         header("1").map(totalPages->{
-
-            Flux.range(1,totalPages).concatMap(page-> {
-                return load("1");
+          Flux.range(1,totalPages).concatMap(page-> {
+                return load("1",page.toString());
             }).subscribe();
-
-            log.info("page {}",totalPages);
-
             return Mono.empty();
         }).subscribe();
+    }
 
+    @PostConstruct
+    void initPages() {
+        Flux.fromStream(Arrays.stream(SitiosWeb.values())).concatMap(site->{
+            String uri = site.getLetter() +WP_API_ .replace("i","1");
+            log.info("site {}",uri);
+            return Flux.empty();
+        }).subscribe();
     }
 
     /**
@@ -87,11 +93,12 @@ public class WordPressService {
                 .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
     }
 
-    private Flux<Post> load(String siteId) {
-        return webClient.get().uri(createUri(siteId))
+    private Flux<Post> load(String siteId,String i) {
+        String uri = createUri(siteId).replace("i",i);
+        return webClient.get().uri(uri)
                 .retrieve().bodyToFlux(Post.class)
                 .doOnNext(d-> {
-                    log.info("{}",d.getTitle());
+                    //log.info("{}",d.getTitle());
                 });
     }
 }
