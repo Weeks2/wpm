@@ -13,7 +13,6 @@ public class PostProcessor {
 
     public PostProcessor(WordPressService wordPressService) {
         this.wordPressService = wordPressService;
-        log.info("PostProcessor");
     }
 
 

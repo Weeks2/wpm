@@ -1,10 +1,11 @@
 package com.tata.flux.wpms;
 
 import com.tata.flux.model.SitiosWeb;
+import com.tata.flux.service.FtpUtility;
 import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,14 +15,16 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 
 @Slf4j
+@Data
 @Service
 public class WordPressService {
     private final WebClient webClient;
-
+    private final FtpUtility ftpUtility;
     @Value("${wordpress.api_page}")
     private  String WP_API_;
-    public WordPressService(WebClient.Builder webClientBuilder) {
+    public WordPressService(WebClient.Builder webClientBuilder, FtpUtility ftpUtility) {
         this.webClient = webClientBuilder.build();
+        this.ftpUtility = ftpUtility;
     }
     public Flux<Post> getPostsBy(PostRequest postRequest) {
         return getPosts(postRequest.getBaseUrl()).take(postRequest.getCount());
@@ -62,17 +65,24 @@ public class WordPressService {
         return SitiosWeb.getLetter(uriId) + WP_API_;
     }
 
-
+    @PostConstruct
     void init() {
-        header("1").map(totalPages->{
-          Flux.range(1,totalPages).concatMap(page-> {
-                return load("1",page.toString());
-            }).subscribe();
-            return Mono.empty();
+        header(createUri("1").replace("PAGE","1")).map(totalPages->{
+            Flux.range(1,totalPages)
+                    .concatMap(page-> {
+                        Flux<String> posts = load(createUri("1").replace("PAGE",page.toString()))
+                                .map(post-> { return post.getTitle().getRendered();
+                                });
+                        try {
+                            return ftpUtility.build(posts,"site_"+ page,"header",".txt");
+                        } catch (Exception e) {
+                            return Flux.empty();
+                        }
+                    }).subscribe();
+            return Flux.empty();
         }).subscribe();
     }
 
-    @PostConstruct
     void initPages() {
         Flux.fromStream(Arrays.stream(SitiosWeb.values())).concatMap(site->{
             String uri = site.getLetter() +WP_API_ .replace("i","1");
@@ -85,20 +95,18 @@ public class WordPressService {
      * X-WP-Total: 17454
      * X-WP-TotalPages: 175
      */
-    public Mono<Integer> header(String siteId) {
-        String uri = createUri(siteId);
-        log.info(uri);
+    public Mono<Integer> header(String uri) {
         return webClient.get().uri(uri).exchangeToMono(response -> response.toBodilessEntity())
                 .map(entity -> entity.getHeaders().getFirst("x-wp-totalpages"))
                 .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
     }
 
-    private Flux<Post> load(String siteId,String i) {
-        String uri = createUri(siteId).replace("i",i);
+    private Flux<Post> load(String uri) {
+        log.info(uri);
         return webClient.get().uri(uri)
                 .retrieve().bodyToFlux(Post.class)
                 .doOnNext(d-> {
-                    //log.info("{}",d.getTitle());
+                  //  log.info("{}",d.getTitle());
                 });
     }
 }

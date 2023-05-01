@@ -9,7 +9,7 @@ public enum SitiosWeb {
     DESPERTAR_DE_LA_COSTA("2","https://despertardelacosta.net/"),
     ABC_DE_ZIHUATANEJO("3","https://abcdezihuatanejo.com/"),
     ENFOQUE_INFORMATIVO("4","http://enfoqueinformativo.mx/"),
-    DIGITAL_GUERRERO("5","https://digitalguerrero.com.mx/"),
+   // DIGITAL_GUERRERO("5","https://digitalguerrero.com.mx/"),
     SUR_ACAPULCO("6","https://suracapulco.mx/"),
     NOVEDADES_ACA("7","https://novedadesaca.mx/"),
     GUERRERO_QUADRATIN("8","https://guerrero.quadratin.com.mx/"),
