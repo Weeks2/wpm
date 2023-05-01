@@ -75,8 +75,7 @@ public class WordPressService {
     }
     public Flux<Post> loadData(String site, int totalPages) {
         Flux.range(1, totalPages).concatMap(i -> {
-            return WebClient.create()
-                    .get()
+            return webClient.get()
                     .uri(createUri(site))
                     .retrieve()
                     .bodyToFlux(Post.class)
