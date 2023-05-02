@@ -85,7 +85,7 @@ public class WordPressService {
                     try {
                         String uri = site.getLetter();
                         Flux<String> data = pullPosts(uri).map(this::convertTitle);
-                        return ftpUtility.build(data,"site_"+ site.getNumber(),"header",".txt");
+                        return ftpUtility.build(data,"site_complete","header",".txt");
                     }
                     catch (Exception e) {
                         return Flux.error(e);

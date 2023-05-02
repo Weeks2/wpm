@@ -110,7 +110,7 @@ public class FtpUtility {
     }
 
     public Flux<String> build(Flux<String> flux, String fileName, String header, String ext) throws Exception {
-        File file = header == null ? new File(fileName+ext) : writeToFile(Arrays.asList(header), fileName + ext);
+        File file = new File(fileName + ext);
         FileWriter writer = new FileWriter(file, true);
         int bufferSize = 8192;
         BufferedWriter buffer = new BufferedWriter(writer,bufferSize);
