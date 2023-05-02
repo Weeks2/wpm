@@ -9,7 +9,7 @@ public enum SitiosWeb {
     DESPERTAR_DE_LA_COSTA("2","https://despertardelacosta.net/"),
     ABC_DE_ZIHUATANEJO("3","https://abcdezihuatanejo.com/"),
     ENFOQUE_INFORMATIVO("4","http://enfoqueinformativo.mx/"),
-   // DIGITAL_GUERRERO("5","https://digitalguerrero.com.mx/"),
+    DIGITAL_GUERRERO("5","https://digitalguerrero.com.mx/"),
     SUR_ACAPULCO("6","https://suracapulco.mx/"),
     NOVEDADES_ACA("7","https://novedadesaca.mx/"),
     GUERRERO_QUADRATIN("8","https://guerrero.quadratin.com.mx/"),
@@ -20,6 +20,8 @@ public enum SitiosWeb {
     private String number;
     private String letter;
 
+    @Value("${wordpress.api_page}")
+    private  String WP_API_;
 
     private SitiosWeb(String number,String letter) {
         this.number = number;
@@ -27,7 +29,7 @@ public enum SitiosWeb {
     }
 
     public String getLetter() {
-        return letter;
+        return letter + "wp-json/wp/v2/posts?per_page=100&page=1";
     }
 
     public String getNumber() {
@@ -35,10 +37,8 @@ public enum SitiosWeb {
     }
 
     public static String getLetter(String number) {
-        return Arrays.stream(SitiosWeb.values())
-                .filter(e -> e.getNumber().equals(number))
-                .map(SitiosWeb::getLetter)
-                .findFirst()
-                .orElse("https://cambiodemichoacan.com.mx/${wordpress.api_page}");
+        return (Arrays.stream(SitiosWeb.values())
+                .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getLetter)
+                .findFirst().orElse(""));
     }
 }
