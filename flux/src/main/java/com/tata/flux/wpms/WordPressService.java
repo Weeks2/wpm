@@ -107,7 +107,7 @@ public class WordPressService {
         return webClient.get().uri(uri)
                 .retrieve().bodyToFlux(Post.class)
                 .doOnNext(d-> {
-                   log.info("{}",d.getTitle());
+                   //log.info("{}",d.getTitle());
                 });
     }
 
@@ -115,12 +115,12 @@ public class WordPressService {
     private Flux<Post> pullAll() 
     {
         String uri = SitiosWeb.getLetter("1");
-        Flux<Post> posts = header(uri).flatMapMany(totalPages->{
-           return Flux.range(1,totalPages)
-                    .concatMap(page-> {
-                       return pullPosts(uri.replace("PAGE", page.toString()));
+        String uri_ = SitiosWeb.getLetterPage("1");
+        Flux<Post> posts = header(uri).flatMapMany(totalPages-> {
+            return Flux.range(1,totalPages).concatMap(page-> {
+                       return pullPosts(uri_.replace("PAGE", page.toString()));
                     });
-        });
+                });
         posts.subscribe();
         return posts;
     }

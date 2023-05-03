@@ -32,6 +32,10 @@ public enum SitiosWeb {
         return letter + "wp-json/wp/v2/posts?per_page=100&page=1";
     }
 
+    public String getLetterPage() {
+        return letter + "wp-json/wp/v2/posts?per_page=100&page=PAGE";
+    }
+
     public String getNumber() {
         return number;
     }
@@ -39,6 +43,12 @@ public enum SitiosWeb {
     public static String getLetter(String number) {
         return (Arrays.stream(SitiosWeb.values())
                 .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getLetter)
+                .findFirst().orElse(""));
+    }
+
+    public static String getLetterPage(String number) {
+        return (Arrays.stream(SitiosWeb.values())
+                .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getLetterPage)
                 .findFirst().orElse(""));
     }
 }
