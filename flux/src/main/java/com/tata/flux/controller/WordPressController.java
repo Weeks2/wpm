@@ -2,6 +2,7 @@ package com.tata.flux.controller;
 
 import com.tata.flux.model.SitiosWeb;
 import com.tata.flux.wpms.Post;
+import com.tata.flux.wpms.PostEntity;
 import com.tata.flux.wpms.PostRequest;
 import com.tata.flux.wpms.WordPressService;
 import io.netty.handler.codec.Headers;
@@ -21,7 +22,7 @@ public class WordPressController {
     }
 
     @GetMapping("/posts")
-    public Flux<Post> getPosts(@RequestParam String uri) {
+    public Flux<PostEntity> getPosts(@RequestParam String uri) {
         return wordPressService.getPosts(uri);
     }
 
@@ -31,7 +32,7 @@ public class WordPressController {
     }
 
     @PostMapping ("/posts")
-    public Flux<Post> getPosts(@RequestBody PostRequest postrequest) {
+    public Flux<PostEntity> getPosts(@RequestBody PostRequest postrequest) {
         return wordPressService.getPostsBy(postrequest);
     }
 }

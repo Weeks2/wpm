@@ -23,18 +23,21 @@ public class WordPressService {
         this.webClient = webClientBuilder.build();
         this.ftpUtility = ftpUtility;
     }
-    public Flux<Post> getPostsBy(PostRequest postRequest) {
+    public Flux<PostEntity> getPostsBy(PostRequest postRequest) {
         return getPosts(postRequest.getBaseUrl()).take(postRequest.getCount());
     }
-    public Flux<Post> getPosts(String site) {
-        return webClient.mutate().baseUrl(createUri(site)).build()
+    public Flux<PostEntity> getPosts(String site) {
+        String uri = SitiosWeb.getLetter(site).replace("=100", "=1");
+        log.info(uri);
+        return webClient.mutate().baseUrl(uri).build()
                 .get()
-                .uri(createUri(site))
+                .uri(uri)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(Post.class)
+                .map(PostEntity::of)
                 .doOnNext(d-> {
-                    log.info("datos {}",d.getTitle());
+                    log.info("{}",d.getTitle());
                 })
                 .onErrorResume(throwable -> {
                     if (site.isBlank()) {
@@ -69,7 +72,7 @@ public class WordPressService {
                     .concatMap(page-> {
                         try {
                             String uri = createUri("1").replace("PAGE",page.toString());
-                            Flux<String> posts = pullPosts(uri).map(post-> post.getTitle().getRendered());
+                            Flux<String> posts = pullAll(uri).map(post-> post.getTitle().getRendered());
                             return ftpUtility.build(posts,"site_"+ page,"header",".txt");
                         } catch (Exception e) {
                             return Flux.empty();
@@ -111,33 +114,31 @@ public class WordPressService {
                 });
     }
 
-    @PostConstruct
-    private Flux<Post> pullAll() 
-    {
-        String uri = SitiosWeb.getLetter("1");
-        String uri_ = SitiosWeb.getLetterPage("1");
-        Flux<Post> posts = header(uri).flatMapMany(totalPages-> {
+    
+    private Flux<Post> pullAll(String number) 
+    {  
+        Flux<Post> posts = header(SitiosWeb.getLetter(number)).flatMapMany(totalPages-> {
             return Flux.range(1,totalPages).concatMap(page-> {
-                       return pullPosts(uri_.replace("PAGE", page.toString()));
+                       return pullPosts(SitiosWeb.getLetterPage(number).replace("PAGE", page.toString()));
                     });
                 });
-        posts.subscribe();
+        //posts.subscribe();
         return posts;
     }
 
+    //@PostConstruct
     void init_() {
         Flux.fromStream(Arrays.stream(SitiosWeb.values()))
-        .concatMap(site->{
+        .flatMap(site->{
                     try {
-                        String uri = site.getLetter();
-                        Flux<String> data = pullPosts(uri).map(this::convertTitle);
-                        return ftpUtility.build(data,"site_complete","header",".txt");
+                        Flux<String> data = pullAll(site.getNumber()).map(this::convertTitle);
+                        return ftpUtility.build(data,"site_complete"+site.getNumber(),"header",".txt");
                     }
                     catch (Exception e) {
                         return Flux.error(e);
                     }
-        }).onErrorContinue((t,o) -> {
-            log.error("Se ha producido un error al obtener los datos: {}", t.getMessage());
+        },5).onErrorContinue((t,o) -> {
+            log.error("{}", t.getMessage());
         }).subscribe();
     }
 }

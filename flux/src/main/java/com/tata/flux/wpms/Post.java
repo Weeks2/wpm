@@ -2,6 +2,8 @@ package com.tata.flux.wpms;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
@@ -10,9 +12,9 @@ import java.time.LocalDateTime;
 @ToString
 @Data
 public class Post {
-    @JsonProperty
+    @JsonProperty("id")
     private Integer id;
-    @JsonProperty
+    @JsonProperty("title")
     private Title title;
     @JsonProperty
     private Integer author;
@@ -22,6 +24,10 @@ public class Post {
     private String link;
     @JsonProperty
     private Content content;
+    @JsonProperty
+    private Integer[] categories;
+    @JsonProperty
+    private Integer[] tags;
 }
 @Data
 class Title {

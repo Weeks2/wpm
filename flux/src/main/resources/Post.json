@@ -1,0 +1,234 @@
+[
+    {
+        "id": 61671,
+        "date": "2023-05-03T10:04:00",
+        "date_gmt": "2023-05-03T16:04:00",
+        "guid": {
+            "rendered": "https:\/\/cambiodemichoacan.com.mx\/?p=61671"
+        },
+        "modified": "2023-05-02T17:03:37",
+        "modified_gmt": "2023-05-02T23:03:37",
+        "slug": "medicina-institucional-y-medicina-privada",
+        "status": "publish",
+        "type": "post",
+        "link": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/",
+        "title": {
+            "rendered": "Medicina institucional y medicina privada"
+        },
+        "content": {
+            "rendered":"",
+             "protected": false
+        },
+        "excerpt": {
+            "rendered":"",
+            "protected": false
+        },
+        "author": 16,
+        "featured_media": 44159,
+        "comment_status": "closed",
+        "ping_status": "open",
+        "sticky": false,
+        "template": "",
+        "format": "standard",
+        "meta": {
+            "tdm_status": "",
+            "tdm_grid_status": ""
+        },
+        "categories": [
+            8
+        ],
+        "tags": [
+            214,
+            2036,
+            2721
+        ],
+        "yoast_head":"",
+        "yoast_head_json": {
+            "title": "Medicina institucional y medicina privada - Cambio de Michoac\u00e1n",
+            "description":"",
+            "robots": {
+                "index": "index",
+                "follow": "follow",
+                "max-snippet": "max-snippet:-1",
+                "max-image-preview": "max-image-preview:large",
+                "max-video-preview": "max-video-preview:-1"
+            },
+            "canonical": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/",
+            "og_locale": "es_ES",
+            "og_type": "article",
+            "og_title": "Medicina institucional y medicina privada - Cambio de Michoac\u00e1n",
+            "og_description":"",
+            "og_url": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/",
+            "og_site_name": "Cambio de Michoac\u00e1n",
+            "article_published_time": "2023-05-03T16:04:00+00:00",
+            "article_modified_time": "2023-05-02T23:03:37+00:00",
+            "og_image": [
+                {
+                    "width": 1024,
+                    "height": 767,
+                    "url": "https:\/\/cambiodemichoacan.com.mx\/wp-content\/uploads\/2022\/04\/imss.jpg",
+                    "type": "image\/jpeg"
+                }
+            ],
+            "author": "Alejandro V\u00e1zquez",
+            "twitter_card": "summary_large_image",
+            "twitter_misc": {
+                "Escrito por": "Alejandro V\u00e1zquez",
+                "Tiempo de lectura": "4 minutos"
+            },
+            "schema": {
+                "@context": "https:\/\/schema.org",
+                "@graph": [
+                    {
+                        "@type": "WebPage",
+                        "@id": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/",
+                        "url": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/",
+                        "name": "Medicina institucional y medicina privada - Cambio de Michoac\u00e1n",
+                        "isPartOf": {
+                            "@id": "https:\/\/cambiodemichoacan.com.mx\/#website"
+                        },
+                        "datePublished": "2023-05-03T16:04:00+00:00",
+                        "dateModified": "2023-05-02T23:03:37+00:00",
+                        "author": {
+                            "@id": "https:\/\/cambiodemichoacan.com.mx\/#\/schema\/person\/264818ec7ac98ed478e83c3f34067b9e"
+                        },
+                        "description": "",
+                         "breadcrumb": {
+                            "@id": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/#breadcrumb"
+                        },
+                        "inLanguage": "es",
+                        "potentialAction": [
+                            {
+                                "@type": "ReadAction",
+                                "target": [
+                                    "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "@id": "https:\/\/cambiodemichoacan.com.mx\/2023\/05\/03\/medicina-institucional-y-medicina-privada\/#breadcrumb",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Portada",
+                                "item": "https:\/\/cambiodemichoacan.com.mx\/"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "Medicina institucional y medicina privada"
+                            }
+                        ]
+                    },
+                    {
+                        "@type": "WebSite",
+                        "@id": "https:\/\/cambiodemichoacan.com.mx\/#website",
+                        "url": "https:\/\/cambiodemichoacan.com.mx\/",
+                        "name": "Cambio de Michoac\u00e1n",
+                        "description": "Noticias de Michoac\u00e1n",
+                        "potentialAction": [
+                            {
+                                "@type": "SearchAction",
+                                "target": {
+                                    "@type": "EntryPoint",
+                                    "urlTemplate": "https:\/\/cambiodemichoacan.com.mx\/?s={search_term_string}"
+                                },
+                                "query-input": "required name=search_term_string"
+                            }
+                        ],
+                        "inLanguage": "es"
+                    },
+                    {
+                        "@type": "Person",
+                        "@id": "https:\/\/cambiodemichoacan.com.mx\/#\/schema\/person\/264818ec7ac98ed478e83c3f34067b9e",
+                        "name": "Alejandro V\u00e1zquez",
+                        "image": {
+                            "@type": "ImageObject",
+                            "inLanguage": "es",
+                            "@id": "https:\/\/cambiodemichoacan.com.mx\/#\/schema\/person\/image\/",
+                            "url": "https:\/\/cambiodemichoacan.com.mx\/wp-content\/uploads\/2021\/06\/vazquez-150x150.jpg",
+                            "contentUrl": "https:\/\/cambiodemichoacan.com.mx\/wp-content\/uploads\/2021\/06\/vazquez-150x150.jpg",
+                            "caption": "Alejandro V\u00e1zquez"
+                        },
+                        "url": "https:\/\/cambiodemichoacan.com.mx\/author\/alex-vaz\/"
+                    }
+                ]
+            }
+        },
+        "amp_enabled": true,
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/posts\/61671"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/posts"
+                }
+            ],
+            "about": [
+                {
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/types\/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/users\/16"
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/comments?post=61671"
+                }
+            ],
+            "version-history": [
+                {
+                    "count": 1,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/posts\/61671\/revisions"
+                }
+            ],
+            "predecessor-version": [
+                {
+                    "id": 61672,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/posts\/61671\/revisions\/61672"
+                }
+            ],
+            "wp:featuredmedia": [
+                {
+                    "embeddable": true,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/media\/44159"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/media?parent=61671"
+                }
+            ],
+            "wp:term": [
+                {
+                    "taxonomy": "category",
+                    "embeddable": true,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/categories?post=61671"
+                },
+                {
+                    "taxonomy": "post_tag",
+                    "embeddable": true,
+                    "href": "https:\/\/cambiodemichoacan.com.mx\/wp-json\/wp\/v2\/tags?post=61671"
+                }
+            ],
+            "curies": [
+                {
+                    "name": "wp",
+                    "href": "https:\/\/api.w.org\/{rel}",
+                    "templated": true
+                }
+            ]
+        }
+    }
+]
