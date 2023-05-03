@@ -78,22 +78,6 @@ public class WordPressService {
             return Flux.empty();
         }).subscribe();
     }
-    @PostConstruct
-    void init_() {
-        Flux.fromStream(Arrays.stream(SitiosWeb.values()))
-        .concatMap(site->{
-                    try {
-                        String uri = site.getLetter();
-                        Flux<String> data = pullPosts(uri).map(this::convertTitle);
-                        return ftpUtility.build(data,"site_complete","header",".txt");
-                    }
-                    catch (Exception e) {
-                        return Flux.error(e);
-                    }
-        }).onErrorContinue((t,o) -> {
-            log.error("Se ha producido un error al obtener los datos: {}", t.getMessage());
-        }).subscribe();
-    }
 
     private String convertTitle(Post post)
     {
@@ -123,7 +107,37 @@ public class WordPressService {
         return webClient.get().uri(uri)
                 .retrieve().bodyToFlux(Post.class)
                 .doOnNext(d-> {
-                  //  log.info("{}",d.getTitle());
+                   log.info("{}",d.getTitle());
                 });
+    }
+
+    @PostConstruct
+    private Flux<Post> pullAll() 
+    {
+        String uri = SitiosWeb.getLetter("1");
+        Flux<Post> posts = header(uri).flatMapMany(totalPages->{
+           return Flux.range(1,totalPages)
+                    .concatMap(page-> {
+                       return pullPosts(uri.replace("PAGE", page.toString()));
+                    });
+        });
+        posts.subscribe();
+        return posts;
+    }
+
+    void init_() {
+        Flux.fromStream(Arrays.stream(SitiosWeb.values()))
+        .concatMap(site->{
+                    try {
+                        String uri = site.getLetter();
+                        Flux<String> data = pullPosts(uri).map(this::convertTitle);
+                        return ftpUtility.build(data,"site_complete","header",".txt");
+                    }
+                    catch (Exception e) {
+                        return Flux.error(e);
+                    }
+        }).onErrorContinue((t,o) -> {
+            log.error("Se ha producido un error al obtener los datos: {}", t.getMessage());
+        }).subscribe();
     }
 }
