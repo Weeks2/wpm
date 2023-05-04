@@ -29,13 +29,11 @@ public class WordPressService {
     public Flux<PostEntity> getPosts(String site) {
         String uri = SitiosWeb.getLetter(site).replace("=100", "=1");
         log.info(uri);
-        return webClient.mutate().baseUrl(uri).build()
-                .get()
-                .uri(uri)
-                .accept(MediaType.APPLICATION_JSON)
+        return webClient.get().uri(uri)
+        .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(Post.class)
-                .map(PostEntity::of)
+                .map(PostEntity::parsePost)
                 .doOnNext(d-> {
                     log.info("{}",d.getTitle());
                 })

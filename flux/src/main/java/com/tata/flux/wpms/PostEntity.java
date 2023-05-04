@@ -16,7 +16,7 @@ public class PostEntity {
     private String link;
     private String content;
 
-    public static PostEntity of(Post post) {
+    public static PostEntity parsePost(Post post) {
         return PostEntity.builder()
                 .id(post.getId())
                 .title(post.getTitle().getRendered())
