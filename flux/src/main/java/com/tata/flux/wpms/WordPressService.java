@@ -37,12 +37,11 @@ public class WordPressService {
                 .doOnNext(d-> {
                     log.info("{}",d.getTitle());
                 })
-                .onErrorResume(throwable -> {
+                .onErrorContinue( (e,o) -> {
                     if (site.isBlank()) {
                         log.error("La URL de la base está en blanco");
                     }
-                    log.error("Se ha producido un error al obtener los datos: {}", createUri(site));
-                    return Flux.empty();
+                    log.error("Se ha producido un error {}", createUri(site));
                 });
     }
 
