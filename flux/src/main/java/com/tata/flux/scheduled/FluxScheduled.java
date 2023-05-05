@@ -24,7 +24,7 @@ public class FluxScheduled {
     scheduler.schedule(this::triggerPullWpData, 0, TimeUnit.MILLISECONDS);
   }
 
-  @PostConstruct
+  //@PostConstruct
   private void triggerPullWpData()
   {
     service.triggerPullWpData().subscribe();

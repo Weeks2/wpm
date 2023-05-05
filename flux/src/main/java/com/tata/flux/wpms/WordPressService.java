@@ -1,7 +1,6 @@
 package com.tata.flux.wpms;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tata.flux.model.SitiosWeb;
 import com.tata.flux.service.FtpUtility;
 import lombok.Data;
@@ -14,6 +13,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -63,6 +64,12 @@ public class WordPressService {
     private Flux<Post> pullPosts(String uri) {
         log.info("site {}",uri);
         return webClient.get().uri(uri).retrieve().bodyToFlux(Post.class)
+        .onErrorResume(error -> {
+            if (error instanceof WebClientRequestException) {
+                log.info("excepcion: {}", error.getMessage());
+            };
+            return Mono.empty();
+      })
                 .doOnNext(d-> log.info("{}",d.getTitle()));
     }
 
@@ -72,7 +79,6 @@ public class WordPressService {
 
     public Flux<PostEntity> getPosts(String site) {
         String uri = SitiosWeb.getLetter(site).replace("=100", "=1");
-        log.info(uri);
          return pullPosts(uri).map(PostEntity::parsePost).doOnNext(d-> {
             log.info("{}",d.getTitle());
         })
@@ -172,4 +178,5 @@ public class WordPressService {
                 });
             }
 
+            
 }
