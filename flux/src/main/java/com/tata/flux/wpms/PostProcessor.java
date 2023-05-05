@@ -1,6 +1,5 @@
 package com.tata.flux.wpms;
-
-import jakarta.annotation.PostConstruct;
+ 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +17,9 @@ public class PostProcessor {
 
     public void processNewPosts() {
         wordPressService.getPosts("")
-                .filter(post -> post.getDate().isAfter(LocalDateTime.now().minusMinutes(5)))
-                .subscribe(this::processPost);
+                .filter(post -> post.getDate()
+                .isAfter(LocalDateTime.now()
+                .minusMinutes(5))).subscribe();
     }
 
     private void processPost(Post post) {

@@ -30,26 +30,58 @@ public class WordPressService {
         this.webClient = webClientBuilder.build();
         this.ftpUtility = ftpUtility;
     }
+
+    public Flux<String> triggerPullWpData() {
+        return Flux.fromStream(Arrays.stream(SitiosWeb.values()))
+        .flatMap(site->{
+                    try {
+                        Flux<String> data = pullAll(site.getNumber()).map(this::convertTitle);
+                        return ftpUtility.build(data,"site_complete"+site.getNumber(),"header",".txt");
+                    }
+                    catch (Exception e) {
+                        return Flux.error(e);
+                    }
+        },5)
+        .onErrorContinue((t,o) -> {
+            log.error("{}", t.getMessage());
+        });
+    }
+
+    /**
+     * X-WP-Total: 17454, X-WP-TotalPages: 175
+     */
+    private Flux<Post> pullAll(String number) {
+        Flux<Post> posts = readheader("x-wp-totalpages",SitiosWeb.getLetter(number)).flatMapMany(totalPages-> {
+            return Flux.range(1,totalPages).concatMap(page-> {
+                       return pullPosts(SitiosWeb.getLetterPage(number).replace("PAGE", page.toString()));
+                    });
+                });
+        //posts.subscribe();
+        return posts;
+    }
+
+    private Flux<Post> pullPosts(String uri) {
+        log.info("site {}",uri);
+        return webClient.get().uri(uri).retrieve().bodyToFlux(Post.class)
+                .doOnNext(d-> log.info("{}",d.getTitle()));
+    }
+
     public Flux<PostEntity> getPostsBy(PostRequest postRequest) {
         return getPosts(postRequest.getBaseUrl()).take(postRequest.getCount());
     }
+
     public Flux<PostEntity> getPosts(String site) {
         String uri = SitiosWeb.getLetter(site).replace("=100", "=1");
         log.info(uri);
-        return webClient.get().uri(uri)
-        .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToFlux(Post.class)
-                .map(PostEntity::parsePost)
-                .doOnNext(d-> {
-                    log.info("{}",d.getTitle());
-                })
-                .onErrorContinue( (e,o) -> {
-                    if (site.isBlank()) {
-                        log.error("La URL de la base está en blanco");
-                    }
-                    log.error("Se ha producido un error {}", createUri(site));
-                });
+         return pullPosts(uri).map(PostEntity::parsePost).doOnNext(d-> {
+            log.info("{}",d.getTitle());
+        })
+        .onErrorContinue( (e,o) -> {
+            if (site.isBlank()) {
+                log.error("La URL de la base está en blanco");
+            }
+            log.error("Se ha producido un error {}", createUri(site));
+        });
     }
 
     public Flux<Post> loadData(String site, int totalPages) {
@@ -69,7 +101,7 @@ public class WordPressService {
         return SitiosWeb.getLetter(uriId);
     }
 
-    void init() {
+    public void init() {
         String headerUri = createUri("1").replace("PAGE","1");
         readheader("x-wp-totalpages",headerUri).map(totalPages->{
             Flux.range(1,totalPages)
@@ -105,42 +137,7 @@ public class WordPressService {
                 .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
     }
 
-    private Flux<Post> pullPosts(String uri) {
-        log.info("site {}",uri);
-        return webClient.get().uri(uri).retrieve().bodyToFlux(Post.class)
-                .doOnNext(d-> log.info("{}",d.getTitle()));
-    }
-
-    /**
-     * X-WP-Total: 17454, X-WP-TotalPages: 175
-     */
-    private Flux<Post> pullAll(String number) {
-        Flux<Post> posts = readheader("x-wp-totalpages",SitiosWeb.getLetter(number)).flatMapMany(totalPages-> {
-            return Flux.range(1,totalPages).concatMap(page-> {
-                       return pullPosts(SitiosWeb.getLetterPage(number).replace("PAGE", page.toString()));
-                    });
-                });
-        //posts.subscribe();
-        return posts;
-    }
-
-    //@PostConstruct
-    void init_() {
-        Flux.fromStream(Arrays.stream(SitiosWeb.values()))
-        .flatMap(site->{
-                    try {
-                        Flux<String> data = pullAll(site.getNumber()).map(this::convertTitle);
-                        return ftpUtility.build(data,"site_complete"+site.getNumber(),"header",".txt");
-                    }
-                    catch (Exception e) {
-                        return Flux.error(e);
-                    }
-        },5)
-        .onErrorContinue((t,o) -> {
-            log.error("{}", t.getMessage());
-        }).subscribe();
-    }
- public static void testApi() {
+    public static void testApi() {
         WebClient webClient = WebClient.builder().baseUrl(WORDPRESS_API_URL).build();
 
         webClient.get().accept(MediaType.APPLICATION_JSON).retrieve()
