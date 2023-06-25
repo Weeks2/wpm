@@ -3,15 +3,14 @@ package com.tata.flux.scheduled;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
- 
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import com.tata.flux.wpms.WordPressService;
-
-import jakarta.annotation.PostConstruct;
 import lombok.Data; 
- 
+
+@Slf4j
 @Data
 @Component
 public class FluxScheduled {
@@ -27,7 +26,8 @@ public class FluxScheduled {
   //@PostConstruct
   private void triggerPullWpData()
   {
-    service.triggerPullWpData().subscribe();
+    log.info("started scheduled");
+    service.triggerPullWpDataLast().subscribe();
   }
 }
 

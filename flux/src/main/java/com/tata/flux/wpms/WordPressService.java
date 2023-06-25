@@ -33,8 +33,7 @@ public class WordPressService {
     }
 
     public Flux<String> triggerPullWpData() {
-        return Flux.fromStream(Arrays.stream(SitiosWeb.values()))
-        .flatMap(site->{
+        return Flux.fromStream(Arrays.stream(SitiosWeb.values())).flatMap(site->{
                     try {
                         Flux<String> data = pullAll(site.getNumber()).map(this::convertTitle);
                         return ftpUtility.build(data,"site_complete"+site.getNumber(),"header",".txt");
@@ -48,15 +47,34 @@ public class WordPressService {
         });
     }
 
+    public Flux<String> triggerPullWpDataLast() {
+        return Flux.fromStream(Arrays.stream(SitiosWeb.values())).flatMap(site->{
+                    try {
+                        Flux<String> data = pullLastPage(site.getNumber()).map(this::convertTitle);
+                        return ftpUtility.build(data,"last100_site_"+site.getNumber(),"header",".txt");
+                    }
+                    catch (Exception e) {
+                        return Flux.error(e);
+                    }
+                },5)
+                .onErrorContinue((t,o) -> {
+                    log.error("{}", t.getMessage());
+                });
+    }
+
+    private Flux<Post> pullLastPage(String number) {
+        return pullPosts(SitiosWeb.getBaseLink(number).replace("PAGE", "1"));
+    }
+
     /**
      * X-WP-Total: 17454, X-WP-TotalPages: 175
      */
     private Flux<Post> pullAll(String number) {
-        Flux<Post> posts = readheader("x-wp-totalpages",SitiosWeb.getLetter(number)).flatMapMany(totalPages-> {
-            return Flux.range(1,totalPages).concatMap(page-> {
-                       return pullPosts(SitiosWeb.getLetterPage(number).replace("PAGE", page.toString()));
-                    });
-                });
+        Flux<Post> posts = readheader("x-wp-totalpages",SitiosWeb.getLetter(number))
+                .flatMapMany(totalPages-> Flux.range(1,totalPages).concatMap(page->
+                        pullPosts(SitiosWeb.getBaseLink(number).replace("PAGE", page.toString()))
+                    )
+                );
         //posts.subscribe();
         return posts;
     }
@@ -131,7 +149,7 @@ public class WordPressService {
 
     void initPages() {
         Flux.fromStream(Arrays.stream(SitiosWeb.values())).concatMap(site->{
-            String uri = site.getLetter() .replace("PAGE","1");
+            String uri = site.getLink() .replace("PAGE","1");
             log.info("site {}",uri);
             return Flux.empty();
         }).subscribe();

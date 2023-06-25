@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono;
 @Data
 @RestController
 @RequestMapping("/flux")
-@AllArgsConstructor
 public class FluxController {
 
     private final FluxService fluxService;

@@ -1,12 +1,15 @@
 package com.tata.flux.controller;
 import com.tata.flux.wpms.PostEntity;
 import com.tata.flux.wpms.PostRequest;
-import com.tata.flux.wpms.WordPressService; 
+import com.tata.flux.wpms.WordPressService;
+import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping("/flux_")
+@Data
 public class WordPressController {
     private final WordPressService wordPressService;
 

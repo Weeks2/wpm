@@ -18,22 +18,22 @@ public enum SitiosWeb {
     ZIHUABOLETIN_NOTICIAS("11","https://zihuaboletinnoticias.com/"),
     YAVAS("12","https://yavas.mx/");
     private String number;
-    private String letter;
+    private String link;
 
     @Value("${wordpress.api_page}")
     private  String WP_API_;
 
-    private SitiosWeb(String number,String letter) {
+    private SitiosWeb(String number,String link) {
         this.number = number;
-        this.letter = letter;
+        this.link = link;
     }
 
-    public String getLetter() {
-        return letter + "wp-json/wp/v2/posts?per_page=100&page=1";
+    public String getLink() {
+        return link + "wp-json/wp/v2/posts?per_page=100&page=1";
     }
 
-    public String getLetterPage() {
-        return letter + "wp-json/wp/v2/posts?per_page=100&page=PAGE";
+    public String getBaseLink() {
+        return link + "wp-json/wp/v2/posts?per_page=100&page=PAGE";
     }
 
     public String getNumber() {
@@ -42,13 +42,13 @@ public enum SitiosWeb {
 
     public static String getLetter(String number) {
         return (Arrays.stream(SitiosWeb.values())
-                .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getLetter)
+                .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getLink)
                 .findFirst().orElse(""));
     }
 
-    public static String getLetterPage(String number) {
+    public static String getBaseLink(String number) {
         return (Arrays.stream(SitiosWeb.values())
-                .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getLetterPage)
+                .filter(e -> e.getNumber().equals(number)).map(SitiosWeb::getBaseLink)
                 .findFirst().orElse(""));
     }
 }
