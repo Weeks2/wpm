@@ -4,6 +4,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.tata.flux.wpms.WordpressApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import lombok.Data;
 public class FluxScheduled {
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-  private final WordPressService service;
+  private final WordpressApiService service;
 
   @Scheduled(cron = "0 * * * * ?")
   public void executeTask() {
@@ -27,7 +28,7 @@ public class FluxScheduled {
   private void triggerPullWpData()
   {
     log.info("started scheduled");
-    service.triggerPullWpDataLast().subscribe();
+    service.pullSitesDefault().subscribe();
   }
 }
 

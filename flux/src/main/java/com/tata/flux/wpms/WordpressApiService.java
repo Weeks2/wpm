@@ -38,9 +38,13 @@ public class WordpressApiService {
     }
 
     private Flux<Post> pullAllDataBy(String baseUri) {
-        return readHeader(baseUri).flatMapMany(totalPages-> Flux.range(1,totalPages)
-                .concatMap(page-> requestByUri(SitesService.buildUri(baseUri,100,page)))
+        return readHeader(SitesService.buildUri(baseUri,100,1)).flatMapMany(totalPages->
+                Flux.range(1,totalPages)
+                        .concatMap(page-> requestByUri(SitesService.buildUri(baseUri,100,page)))
         );
+    }
+    private Flux<Post> pullByMaxPage(String baseUri, int perPage,int maxPages) {
+        return Flux.range(1,maxPages).concatMap(page-> requestByUri(SitesService.buildUri(baseUri,100,page)));
     }
     private String convertTitle(Post post)
     {
@@ -50,7 +54,6 @@ public class WordpressApiService {
     private Flux<Post> pullLastPage(String baseUri) {
         return requestByUri(SitesService.buildUri(baseUri,100,1));
     }
-
     private Flux<Post> requestByUri(String uri) {
         log.info("site {}",uri);
         return webClient.get().uri(uri).retrieve()
@@ -63,11 +66,10 @@ public class WordpressApiService {
                 })
                 .doOnNext(d-> log.info("{}",d.getTitle()));
     }
-
     private Mono<Integer> readHeader(String uri) {
+        if(!uri.contains("page")) log.info("check uri {}",uri);
         return webClient.get().uri(uri).exchangeToMono(response -> response.toBodilessEntity())
                 .map(entity -> entity.getHeaders().getFirst("x-wp-totalpages"))
                 .map(totalPagesStr -> totalPagesStr != null ? Integer.parseInt(totalPagesStr) : 0);
     }
-
 }
