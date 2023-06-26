@@ -4,6 +4,7 @@ import com.tata.flux.controller.FluxController;
 import com.tata.flux.model.DataSetRequest;
 import com.tata.flux.model.FluxDataRecord;
 import com.tata.flux.service.FluxService;
+import com.tata.flux.service.SitesService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,5 +90,12 @@ public class FluxControllerTest {
             list.add(new FluxDataRecord(i,"item" + i));
         }
         return Flux.fromIterable(list);
+    }
+
+    @Test
+    void testStringFormat () {
+        String expected = "https://cambiodemichoacan.com.mx/wp-json/wp/v2/posts?per_page=100&page=1";
+        assertEquals(expected,SitesService.buildUri( "https://cambiodemichoacan.com.mx",100,1));
+
     }
 }
