@@ -14,15 +14,25 @@ public  class BuilderBundle {
     private File file;
 
     public BuilderBundle(File file) throws IOException {
+        var bufferSize = 8192;
         this.file = file;
         this.writer = new FileWriter(this.file, true);
-        this.buffer = new BufferedWriter(this.writer);
+        this.buffer = new BufferedWriter(this.writer,bufferSize);
+    }
+
+    public BuilderBundle(BufferedWriter buffer) throws IOException {
+        this.buffer = buffer;
+    }
+
+    public BuilderBundle(FileWriter writer) throws IOException {
+        this.writer = writer;
     }
 
     public void close() throws IOException {
         if (buffer != null) buffer.close();
         if (writer != null) writer.close();
     }
+
     public String getFileName() {
         return file.getName();
     }
