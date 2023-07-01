@@ -23,18 +23,10 @@ public class WordpressApiService {
     }
 
     public Flux<String> pullSitesDefault() {
-        return SitesService.getAllSitesInfo().flatMap(siteInfo->{
-                    try {
-                        var data = pullAllDataBy(siteInfo.getBaseUri()).map(this::convertTitle);
-                        return ftpUtility.build(data, "site_"+siteInfo.getId(),"header",".txt");
-                    }
-                    catch (Exception e) {
-                        return Flux.error(e);
-                    }
-                },6)
-                .onErrorContinue((t,o) -> {
-                    log.error("{}", t.getMessage());
-                });
+        return SitesService.getAllSitesInfo().flatMap(siteInfo->
+                        ftpUtility.build(pullAllDataBy(siteInfo.getBaseUri()).map(this::convertTitle),
+                                "site_"+siteInfo.getId(),"header",".txt")
+                ,6).onErrorContinue((t,o) -> log.error("{}", t.getMessage()));
     }
 
     private Flux<Post> pullAllDataBy(String baseUri) {

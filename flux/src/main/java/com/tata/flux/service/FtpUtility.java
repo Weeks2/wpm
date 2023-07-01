@@ -21,12 +21,14 @@ public class FtpUtility {
         return LocalDateTime.now().toLocalTime().toString().substring(0, 8);
     }
 
-    public Flux<String> build(Flux<String> flux, String fileName, String header, String ext) throws Exception {
+    public Flux<String> build(Flux<String> flux, String fileName, String header, String ext) {
         var file = new File(fileName + ext);
-        var writer = new FileWriter(file, true);
+        FileWriter writer = null;
+        try { writer = new FileWriter(file, true);} catch (Exception e) {}
         var bufferSize = 8192;
         var buffer = new BufferedWriter(writer,bufferSize);
         log.info("{} start build {} ", hour(),fileName);
+        FileWriter finalWriter = writer;
         return flux.doOnNext(line -> {
             try {
                 buffer.write(line);
@@ -38,11 +40,10 @@ public class FtpUtility {
                 log.info("{} end build {} ", hour(),fileName);
                 fileNames.add(file.getName());
                 if (buffer != null) buffer.close();
-                if (writer != null) writer.close();
+                if (finalWriter != null) finalWriter.close();
             } catch (Exception e) {
             }
         });
     }
-
 }
 
